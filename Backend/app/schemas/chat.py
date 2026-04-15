@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class ChatSessionCreate(BaseModel):
@@ -9,6 +9,8 @@ class ChatSessionCreate(BaseModel):
 
 
 class ChatSessionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     title: str
     created_at: datetime
@@ -28,6 +30,8 @@ class ChatMessageCreate(BaseModel):
 
 
 class ChatMessageResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     session_id: int
     role: str

@@ -1,0 +1,4 @@
+Analyze the following conversation history and produce the JSON response.
+
+Conversation history:
+{conversation_history}
