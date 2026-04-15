@@ -26,6 +26,12 @@ class CardRepository:
         await self.db.flush()
         return card
 
+    async def update(self, card: Card, **kwargs) -> Card:
+        for key, value in kwargs.items():
+            setattr(card, key, value)
+        await self.db.flush()
+        return card
+
     async def list_all(self) -> list[Card]:
         result = await self.db.execute(
             select(Card).order_by(Card.name.asc())

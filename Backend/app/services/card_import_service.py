@@ -43,6 +43,7 @@ class CardImportService:
         raw_cards = data.get("data", data)
 
         created = 0
+        updated = 0
         skipped = 0
 
         for raw_card in raw_cards:
@@ -52,6 +53,8 @@ class CardImportService:
             if not name:
                 skipped += 1
                 continue
+
+            payload = self._extract_card_payload(raw_card)
 
             existing = None
             if external_id:
@@ -64,7 +67,11 @@ class CardImportService:
                 skipped += 1
                 continue
 
-            payload = self._extract_card_payload(raw_card)
+            if existing:
+                await self.repository.update(existing, **payload)
+                updated += 1
+                continue
+
             await self.repository.create(**payload)
             created += 1
 
@@ -72,6 +79,7 @@ class CardImportService:
 
         return {
             "created": created,
+            "updated": updated,
             "skipped": skipped,
             "total": len(raw_cards),
         }
