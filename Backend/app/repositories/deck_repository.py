@@ -2,7 +2,7 @@ from app.models.card import Card
 from app.models.deck import Deck
 from app.models.deck_card import DeckCard
 from app.schemas.deck import DeckCreate
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -12,8 +12,9 @@ class DeckRepository:
         self.db = db
 
     async def _get_card_by_name(self, name: str) -> Card | None:
+        normalized_name = name.strip().lower()
         result = await self.db.execute(
-            select(Card).where(Card.name == name)
+            select(Card).where(func.lower(Card.name) == normalized_name)
         )
         return result.scalar_one_or_none()
 
@@ -36,7 +37,7 @@ class DeckRepository:
 
             if not card:
                 card = Card(
-                    name=item.name,
+                    name=item.name.strip(),
                     external_id=item.external_id,
                     card_type=item.card_type,
                     race=item.race,

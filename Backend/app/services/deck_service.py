@@ -1,5 +1,6 @@
 from app.repositories.deck_repository import DeckRepository
 from app.schemas.deck import DeckCreate
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -8,6 +9,10 @@ class DeckService:
         self.repository = DeckRepository(db)
 
     async def create_deck(self, payload: DeckCreate):
+        if not payload.cards:
+            raise HTTPException(
+                status_code=400, detail="Deck must contain at least one card.")
+
         return await self.repository.create(payload)
 
     async def list_decks(self):
