@@ -1,0 +1,112 @@
+# ========================
+# Python / Backend
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.pyo
+
+# Virtual environment
+backend/venv/
+backend/.venv/
+venv/
+.venv/
+ENV/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Alembic
+# (mantemos as migrations, ignoramos apenas cache)
+alembic/__pycache__/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ========================
+# Node / Frontend
+# ========================
+node_modules/
+frontend/node_modules/
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.pnp.*
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Next.js cache
+.next/
+out/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ========================
+# IDEs e Editores
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ========================
+# Dados locais (YGOJSON)
+# ========================
+# Descomente a linha abaixo se não quiser versionar a base de cartas
+# backend/data/ygojson/
+
+# ========================
+# Misc
+# ========================
+.cache/
+.parcel-cache/
+.turbo/
+*.zip
+*.tar.gz
