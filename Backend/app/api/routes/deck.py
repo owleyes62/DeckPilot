@@ -1,6 +1,8 @@
 from app.core.database import get_db
 from app.schemas.deck import DeckCreate, DeckListResponse, DeckResponse
+from app.schemas.deck_validation import DeckValidationResponse
 from app.services.deck_service import DeckService
+from app.services.deck_validation_service import DeckValidationService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -36,3 +38,11 @@ async def get_deck(
         raise HTTPException(status_code=404, detail="Deck not found")
 
     return deck
+
+
+@router.post("/validate", response_model=DeckValidationResponse)
+async def validate_deck(
+    payload: DeckCreate,
+):
+    service = DeckValidationService()
+    return service.validate(payload)
