@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     debug: bool = True
 
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/deckpilot"
+    database_url: str = ""
     openai_api_key: str | None = None
 
     model_config = SettingsConfigDict(
@@ -17,3 +17,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+if not settings.database_url:
+    raise ValueError("DATABASE_URL is not configured.")
