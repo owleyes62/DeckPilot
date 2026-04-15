@@ -1,4 +1,4 @@
-from app.api.routes import health
+from app.api.routes import deck, health
 from fastapi import FastAPI
 
 app = FastAPI(
@@ -8,6 +8,7 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
+app.include_router(deck.router)
 
 
 @app.get("/")

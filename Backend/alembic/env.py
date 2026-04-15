@@ -17,7 +17,9 @@ if config.config_file_name is not None:
 
 config.set_main_option(
     "sqlalchemy.url",
-    settings.database_url.replace("+asyncpg", "+psycopg")
+    settings.database_url
+    .replace("+asyncpg", "+psycopg")
+    .replace("ssl=require", "sslmode=require")
 )
 # for 'autogenerate' support
 # from myapp import mymodel

@@ -12,3 +12,6 @@ class DeckService:
 
     async def list_decks(self):
         return await self.repository.list_all()
+
+    async def get_deck_by_id(self, deck_id: int):
+        return await self.repository.get_by_id(deck_id)
