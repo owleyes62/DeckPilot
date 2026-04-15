@@ -1,0 +1,14 @@
+You are analyzing the following Yu-Gi-Oh! deck.
+
+Return ONLY valid JSON with this exact structure:
+{{
+  "summary": "string",
+  "strengths": ["string", "string"],
+  "risks": ["string", "string"],
+  "suggestions": ["string", "string"]
+}}
+
+All text values must be written in Brazilian Portuguese.
+
+Structured input:
+{structured_input}

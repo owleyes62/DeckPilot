@@ -12,8 +12,10 @@ class DeckService:
         if not payload.cards:
             raise HTTPException(
                 status_code=400, detail="Deck must contain at least one card.")
-
-        return await self.repository.create(payload)
+        try:
+            return await self.repository.create(payload)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc))
 
     async def list_decks(self):
         return await self.repository.list_all()
