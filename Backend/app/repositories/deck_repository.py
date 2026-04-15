@@ -36,23 +36,7 @@ class DeckRepository:
             card = await self._get_card_by_name(item.name)
 
             if not card:
-                card = Card(
-                    name=item.name.strip(),
-                    external_id=item.external_id,
-                    card_type=item.card_type,
-                    race=item.race,
-                    attribute=item.attribute,
-                    level=item.level,
-                    atk=item.atk,
-                    defense=item.defense,
-                    description=item.description,
-                    image_url=item.image_url,
-                    image_small_url=item.image_small_url,
-                    image_cropped_url=item.image_cropped_url,
-                    source=item.source,
-                )
-                self.db.add(card)
-                await self.db.flush()
+                raise ValueError(f"Card not found in database: {item.name}")
 
             deck_card = DeckCard(
                 deck_id=deck.id,

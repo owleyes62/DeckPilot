@@ -25,3 +25,14 @@ class CardResponse(CardBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
+
+class CardListResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    card_type: str | None = None
+    race: str | None = None
+    attribute: str | None = None
+    image_small_url: str | None = None
