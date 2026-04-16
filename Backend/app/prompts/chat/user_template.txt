@@ -1,4 +1,6 @@
-Analyze the following conversation history and produce the JSON response.
+Analyze the following conversation history and produce the next JSON response.
 
 Conversation history:
 {conversation_history}
+
+If tool results are already present in the conversation history, use them before deciding whether another tool is necessary.
