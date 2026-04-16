@@ -115,8 +115,17 @@ class ChatSavedDeckSummary(BaseModel):
     source: str
 
 
+class ChatGenerationStatus(BaseModel):
+    attempted: bool
+    saved: bool
+    message: str
+
+
 class ChatMessageExchangeResponse(BaseModel):
     session_id: int
     user_message: ChatMessageResponse
     assistant_message: ChatMessageResponse
     ai_response: ChatFinalAnswerResponse
+    saved_deck: ChatSavedDeckSummary | None = None
+    invalid_cards: list[str] = []
+    generation_status: ChatGenerationStatus

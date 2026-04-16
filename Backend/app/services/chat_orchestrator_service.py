@@ -1,6 +1,7 @@
 import json
 
-from app.schemas.chat import ChatMessageExchangeResponse, ChatMessageResponse
+from app.schemas.chat import (ChatGenerationStatus,
+                              ChatMessageExchangeResponse, ChatMessageResponse)
 from app.services.chat_ai_service import ChatAIService
 from app.services.chat_service import ChatService
 from app.services.chat_tool_service import ChatToolService
@@ -59,10 +60,20 @@ class ChatOrchestratorService:
 
         saved_deck = None
         invalid_cards: list[str] = []
+        generation_status = ChatGenerationStatus(
+            attempted=False,
+            saved=False,
+            message="Nenhum deck foi gerado nesta resposta.",
+        )
 
         if final_answer.generated_deck is not None:
-            saved_deck, invalid_cards = await self.generated_deck_service.validate_and_save_generated_deck(
-                final_answer.generated_deck
+            saved_deck, invalid_cards, status_message = await self.generated_deck_service.validate_and_save_generated_deck(
+                final_answer.generated_deck)
+
+            generation_status = ChatGenerationStatus(
+                attempted=True,
+                saved=saved_deck is not None,
+                message=status_message,
             )
 
         return ChatMessageExchangeResponse(
@@ -71,4 +82,7 @@ class ChatOrchestratorService:
             assistant_message=ChatMessageResponse.model_validate(
                 assistant_message),
             ai_response=final_answer,
+            saved_deck=saved_deck,
+            invalid_cards=invalid_cards,
+            generation_status=generation_status,
         )
