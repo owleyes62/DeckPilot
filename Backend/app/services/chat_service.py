@@ -14,6 +14,10 @@ class ChatService:
 
         return await self.repository.create_session(title=session_title)
 
+    async def update_session_title(self, session_id: int, title: str):
+        await self.get_session_by_id(session_id)
+        await self.repository.update_session_title(session_id=session_id, title=title.strip())
+
     async def list_sessions(self):
         return await self.repository.list_sessions()
 
@@ -43,3 +47,7 @@ class ChatService:
     async def list_messages_by_session(self, session_id: int):
         await self.get_session_by_id(session_id)
         return await self.repository.list_messages_by_session(session_id=session_id)
+
+    async def list_visible_messages_by_session(self, session_id: int):
+        await self.get_session_by_id(session_id)
+        return await self.repository.list_visible_messages_by_session(session_id=session_id)
