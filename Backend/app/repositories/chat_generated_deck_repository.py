@@ -1,4 +1,6 @@
 from app.models.chat_generated_deck import ChatGeneratedDeck
+from app.models.deck import Deck
+from app.models.deck_card import DeckCard
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -40,7 +42,11 @@ class ChatGeneratedDeckRepository:
     async def get_latest_by_session(self, session_id: int) -> ChatGeneratedDeck | None:
         result = await self.db.execute(
             select(ChatGeneratedDeck)
-            .options(selectinload(ChatGeneratedDeck.deck))
+            .options(
+                selectinload(ChatGeneratedDeck.deck)
+                .selectinload(Deck.deck_cards)
+                .selectinload(DeckCard.card)
+            )
             .where(ChatGeneratedDeck.session_id == session_id)
             .order_by(ChatGeneratedDeck.generation_index.desc())
             .limit(1)
@@ -50,7 +56,11 @@ class ChatGeneratedDeckRepository:
     async def list_by_session(self, session_id: int) -> list[ChatGeneratedDeck]:
         result = await self.db.execute(
             select(ChatGeneratedDeck)
-            .options(selectinload(ChatGeneratedDeck.deck))
+            .options(
+                selectinload(ChatGeneratedDeck.deck)
+                .selectinload(Deck.deck_cards)
+                .selectinload(DeckCard.card)
+            )
             .where(ChatGeneratedDeck.session_id == session_id)
             .order_by(ChatGeneratedDeck.generation_index.asc())
         )

@@ -20,7 +20,7 @@ class ChatOrchestratorService:
         self.chat_service = ChatService(db)
         self.chat_ai_service = ChatAIService()
         self.chat_context_service = ChatContextService()
-        self.chat_deck_context_service = ChatDeckContextService()
+        self.chat_deck_context_service = ChatDeckContextService(db)
         self.chat_title_service = ChatTitleService()
         self.chat_tool_service = ChatToolService(db)
         self.generated_deck_service = GeneratedDeckService(db)
@@ -39,8 +39,9 @@ class ChatOrchestratorService:
         messages = await self.chat_service.list_messages_by_session(session_id=session_id)
         session_context = self.chat_context_service.build_context(
             messages=messages)
-        last_saved_deck = self.chat_deck_context_service.extract_last_saved_deck(
-            messages=messages)
+        last_saved_deck = await self.chat_deck_context_service.get_last_saved_deck(
+            session_id=session_id
+        )
 
         visible_user_messages = [m for m in messages if m.role == "user"]
         if len(visible_user_messages) == 1:
@@ -53,6 +54,9 @@ class ChatOrchestratorService:
             messages = await self.chat_service.list_messages_by_session(session_id=session_id)
             session_context = self.chat_context_service.build_context(
                 messages=messages)
+            last_saved_deck = await self.chat_deck_context_service.get_last_saved_deck(
+                session_id=session_id
+            )
 
             step = self.chat_ai_service.get_next_step(
                 messages=messages,

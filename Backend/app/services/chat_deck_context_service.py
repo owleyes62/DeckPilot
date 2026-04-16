@@ -1,24 +1,38 @@
-import json
-
-from app.models.chat_message import ChatMessage
-from app.schemas.chat import ChatSavedDeckDetail
+from app.schemas.card import CardResponse
+from app.schemas.chat import ChatSavedDeckCard, ChatSavedDeckDetail
+from app.services.chat_generated_deck_service import ChatGeneratedDeckService
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ChatDeckContextService:
-    def extract_last_saved_deck(self, messages: list[ChatMessage]) -> ChatSavedDeckDetail | None:
-        for message in reversed(messages):
-            content = message.content.strip()
+    def __init__(self, db: AsyncSession):
+        self.chat_generated_deck_service = ChatGeneratedDeckService(db)
 
-            if not content.startswith("[SAVED_DECK_JSON]"):
-                continue
+    async def get_last_saved_deck(self, session_id: int) -> ChatSavedDeckDetail | None:
+        latest_link = await self.chat_generated_deck_service.get_latest_generated_deck(
+            session_id=session_id
+        )
 
-            raw_json = content.removeprefix("[SAVED_DECK_JSON]").strip()
+        if not latest_link or not latest_link.deck:
+            return None
 
-            try:
-                data = json.loads(raw_json)
-            except json.JSONDecodeError:
-                continue
+        deck = latest_link.deck
 
-            return ChatSavedDeckDetail(**data)
-
-        return None
+        return ChatSavedDeckDetail(
+            id=deck.id,
+            name=deck.name,
+            archetype=deck.archetype,
+            play_style=deck.play_style,
+            format=deck.format,
+            win_condition=deck.win_condition,
+            how_to_pilot=deck.how_to_pilot,
+            source=deck.source,
+            deck_cards=[
+                ChatSavedDeckCard(
+                    copies=item.copies,
+                    section=item.section,
+                    card=CardResponse.model_validate(item.card),
+                )
+                for item in deck.deck_cards
+            ],
+        )
