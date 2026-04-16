@@ -5,6 +5,7 @@ from app.schemas.chat import (ChatGenerationStatus,
 from app.services.chat_ai_service import ChatAIService
 from app.services.chat_context_service import ChatContextService
 from app.services.chat_deck_context_service import ChatDeckContextService
+from app.services.chat_generated_deck_service import ChatGeneratedDeckService
 from app.services.chat_service import ChatService
 from app.services.chat_title_service import ChatTitleService
 from app.services.chat_tool_service import ChatToolService
@@ -23,6 +24,7 @@ class ChatOrchestratorService:
         self.chat_title_service = ChatTitleService()
         self.chat_tool_service = ChatToolService(db)
         self.generated_deck_service = GeneratedDeckService(db)
+        self.chat_generated_deck_service = ChatGeneratedDeckService(db)
 
     async def send_user_message(
         self,
@@ -135,7 +137,13 @@ class ChatOrchestratorService:
                 saved=saved_deck is not None,
                 message=status_message,
             )
-
+        if saved_deck is not None:
+            await self.chat_generated_deck_service.link_generated_deck(
+                session_id=session_id,
+                deck_id=saved_deck.id,
+                user_message_id=user_message.id,
+                assistant_message_id=assistant_message.id,
+            )
         if saved_deck_detail is not None:
             await self.chat_service.create_assistant_message(
                 session_id=session_id,

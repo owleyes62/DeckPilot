@@ -6,6 +6,7 @@ from sqlalchemy import DateTime, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
+    from app.models.chat_generated_deck import ChatGeneratedDeck
     from app.models.deck_card import DeckCard
     from app.models.deck_diagnosis import DeckDiagnosis
     from app.models.simulation_run import SimulationRun
@@ -50,6 +51,12 @@ class Deck(Base):
     )
     simulation_runs: Mapped[list["SimulationRun"]] = relationship(
         "SimulationRun",
+        back_populates="deck",
+        cascade="all, delete-orphan",
+    )
+
+    chat_generated_links: Mapped[list["ChatGeneratedDeck"]] = relationship(
+        "ChatGeneratedDeck",
         back_populates="deck",
         cascade="all, delete-orphan",
     )
