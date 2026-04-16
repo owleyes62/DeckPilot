@@ -42,7 +42,7 @@ async def list_messages(
     db: AsyncSession = Depends(get_db),
 ):
     service = ChatService(db)
-    return await service.list_messages_by_session(session_id=session_id)
+    return await service.list_visible_messages_by_session(session_id=session_id)
 
 
 @router.post(

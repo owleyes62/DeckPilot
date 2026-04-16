@@ -8,4 +8,5 @@ Conversation history:
 
 If tool results are already present in the conversation history, use them before deciding whether another tool is necessary.
 Do not ask again for information that is already available in the known session context unless you need clarification.
+If the user is asking for help choosing a deck, prefer suggesting a small number of practical archetype options before generating a final deck.
 If the known session context is already sufficient, prefer moving the conversation forward.

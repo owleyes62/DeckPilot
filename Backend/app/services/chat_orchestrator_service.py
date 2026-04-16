@@ -84,13 +84,17 @@ class ChatOrchestratorService:
                 session_id=session_id,
                 content="[CONTEXT_JSON] " + json.dumps(
                     {
-                        "archetype": final_answer.deck_request.archetype,
-                        "play_style": final_answer.deck_request.play_style,
-                        "format": final_answer.deck_request.format,
-                        "goal": final_answer.deck_request.goal,
-                        "difficulty": final_answer.deck_request.difficulty,
-                        "budget": final_answer.deck_request.budget,
-                        "notes": [],
+                        "archetype": final_answer.deck_request.archetype if final_answer.deck_request else None,
+                        "play_style": final_answer.deck_request.play_style if final_answer.deck_request else None,
+                        "format": final_answer.deck_request.format if final_answer.deck_request else None,
+                        "goal": final_answer.deck_request.goal if final_answer.deck_request else None,
+                        "difficulty": final_answer.deck_request.difficulty if final_answer.deck_request else None,
+                        "budget": final_answer.deck_request.budget if final_answer.deck_request else None,
+                        "notes": [
+                            f"Sugestão anterior: {item.name} - {item.reason}"
+                            for item in final_answer.suggested_archetypes
+                        ],
+
                     },
                     ensure_ascii=False,
                 ),

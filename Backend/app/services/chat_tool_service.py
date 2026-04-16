@@ -27,4 +27,13 @@ class ChatToolService:
             )
             return {"tool_name": tool_name, "results": results}
 
+        if tool_name == "discover_cards_for_preferences":
+            query = arguments.get("query", "")
+            limit = arguments.get("limit", 30)
+            results = await self.card_catalog_service.discover_cards_for_preferences(
+                query=query,
+                limit=limit,
+            )
+            return {"tool_name": tool_name, "results": results}
+
         raise ValueError(f"Unknown tool: {tool_name}")
