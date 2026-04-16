@@ -148,14 +148,6 @@ class ChatOrchestratorService:
                 user_message_id=user_message.id,
                 assistant_message_id=assistant_message.id,
             )
-        if saved_deck_detail is not None:
-            await self.chat_service.create_assistant_message(
-                session_id=session_id,
-                content="[SAVED_DECK_JSON] " + json.dumps(
-                    saved_deck_detail.model_dump(),
-                    ensure_ascii=False,
-                ),
-            )
 
         return ChatMessageExchangeResponse(
             session_id=session_id,

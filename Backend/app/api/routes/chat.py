@@ -1,7 +1,9 @@
 from app.core.database import get_db
-from app.schemas.chat import (ChatMessageCreate, ChatMessageExchangeResponse,
+from app.schemas.chat import (ChatGeneratedDeckHistoryResponse,
+                              ChatMessageCreate, ChatMessageExchangeResponse,
                               ChatMessageResponse, ChatSessionCreate,
                               ChatSessionResponse)
+from app.services.chat_generated_deck_service import ChatGeneratedDeckService
 from app.services.chat_orchestrator_service import ChatOrchestratorService
 from app.services.chat_service import ChatService
 from fastapi import APIRouter, Depends
@@ -59,4 +61,21 @@ async def send_message(
     return await service.send_user_message(
         session_id=session_id,
         content=payload.content,
+    )
+
+
+@router.get(
+    "/sessions/{session_id}/generated-decks",
+    response_model=ChatGeneratedDeckHistoryResponse,
+)
+async def list_generated_decks(
+    session_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    chat_service = ChatService(db)
+    await chat_service.get_session_by_id(session_id)
+
+    generated_deck_service = ChatGeneratedDeckService(db)
+    return await generated_deck_service.get_generated_deck_history(
+        session_id=session_id,
     )

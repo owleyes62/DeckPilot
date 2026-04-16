@@ -1,5 +1,8 @@
 from app.repositories.chat_generated_deck_repository import \
     ChatGeneratedDeckRepository
+from app.schemas.chat import (ChatGeneratedDeckHistoryItem,
+                              ChatGeneratedDeckHistoryResponse,
+                              ChatSavedDeckSummary)
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -28,3 +31,35 @@ class ChatGeneratedDeckService:
 
     async def list_generated_decks(self, session_id: int):
         return await self.repository.list_by_session(session_id=session_id)
+
+    async def get_generated_deck_history(
+        self,
+        session_id: int,
+    ) -> ChatGeneratedDeckHistoryResponse:
+        links = await self.repository.list_by_session(session_id=session_id)
+
+        items: list[ChatGeneratedDeckHistoryItem] = []
+
+        for link in links:
+            if not link.deck:
+                continue
+
+            items.append(
+                ChatGeneratedDeckHistoryItem(
+                    generation_index=link.generation_index,
+                    created_at=link.created_at,
+                    deck=ChatSavedDeckSummary(
+                        id=link.deck.id,
+                        name=link.deck.name,
+                        archetype=link.deck.archetype,
+                        play_style=link.deck.play_style,
+                        format=link.deck.format,
+                        source=link.deck.source,
+                    ),
+                )
+            )
+
+        return ChatGeneratedDeckHistoryResponse(
+            session_id=session_id,
+            items=items,
+        )

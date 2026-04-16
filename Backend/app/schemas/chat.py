@@ -140,6 +140,17 @@ class ChatSavedDeckDetail(BaseModel):
     deck_cards: list[ChatSavedDeckCard]
 
 
+class ChatGeneratedDeckHistoryItem(BaseModel):
+    generation_index: int
+    deck: ChatSavedDeckSummary
+    created_at: datetime
+
+
+class ChatGeneratedDeckHistoryResponse(BaseModel):
+    session_id: int
+    items: list[ChatGeneratedDeckHistoryItem]
+
+
 class ChatMessageExchangeResponse(BaseModel):
     session_id: int
     user_message: ChatMessageResponse
