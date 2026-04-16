@@ -12,6 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ChatOrchestratorService:
+    MAX_TOOL_STEPS = 4
+
     def __init__(self, db: AsyncSession):
         self.chat_service = ChatService(db)
         self.chat_ai_service = ChatAIService()
@@ -37,41 +39,44 @@ class ChatOrchestratorService:
             generated_title = self.chat_title_service.generate_title(messages)
             await self.chat_service.update_session_title(session_id=session_id, title=generated_title)
 
-        session_context = self.chat_context_service.build_context(
-            messages=messages)
+        final_answer = None
 
-        first_step = self.chat_ai_service.get_next_step(messages=messages,
-                                                        session_context=session_context,
-                                                        )
-
-        if first_step.get("type") == "tool_call":
-            tool_call = self.chat_ai_service.parse_tool_call(first_step)
-
-            tool_result = await self.chat_tool_service.execute_tool(
-                tool_name=tool_call.tool_name,
-                arguments=tool_call.arguments,
-            )
-
-            await self.chat_service.create_assistant_message(
-                session_id=session_id,
-                content=f"[TOOL_CALL] {tool_call.tool_name}: {json.dumps(tool_call.arguments, ensure_ascii=False)}",
-            )
-
-            await self.chat_service.create_assistant_message(
-                session_id=session_id,
-                content=f"[TOOL_RESULT] {json.dumps(tool_result, ensure_ascii=False)}",
-            )
-
+        for _ in range(self.MAX_TOOL_STEPS + 1):
             messages = await self.chat_service.list_messages_by_session(session_id=session_id)
             session_context = self.chat_context_service.build_context(
                 messages=messages)
 
-            second_step = self.chat_ai_service.get_next_step(messages=messages,
-                                                             session_context=session_context,
-                                                             )
-            final_answer = self.chat_ai_service.parse_final_answer(second_step)
-        else:
-            final_answer = self.chat_ai_service.parse_final_answer(first_step)
+            step = self.chat_ai_service.get_next_step(
+                messages=messages,
+                session_context=session_context,
+            )
+
+            if step.get("type") == "tool_call":
+                tool_call = self.chat_ai_service.parse_tool_call(step)
+
+                tool_result = await self.chat_tool_service.execute_tool(
+                    tool_name=tool_call.tool_name,
+                    arguments=tool_call.arguments,
+                )
+
+                await self.chat_service.create_assistant_message(
+                    session_id=session_id,
+                    content=f"[TOOL_CALL] {tool_call.tool_name}: {json.dumps(tool_call.arguments, ensure_ascii=False)}",
+                )
+
+                await self.chat_service.create_assistant_message(
+                    session_id=session_id,
+                    content=f"[TOOL_RESULT] {json.dumps(tool_result, ensure_ascii=False)}",
+                )
+
+                continue
+
+            final_answer = self.chat_ai_service.parse_final_answer(step)
+            break
+
+        if final_answer is None:
+            raise ValueError(
+                "A IA excedeu o número máximo de tool calls sem retornar resposta final.")
 
         assistant_message = await self.chat_service.create_assistant_message(
             session_id=session_id,
@@ -79,7 +84,7 @@ class ChatOrchestratorService:
         )
 
         # salva snapshot simples de contexto inferido
-        if final_answer.deck_request is not None:
+        if final_answer.deck_request is not None or final_answer.suggested_archetypes:
             await self.chat_service.create_assistant_message(
                 session_id=session_id,
                 content="[CONTEXT_JSON] " + json.dumps(

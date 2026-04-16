@@ -30,3 +30,7 @@ class CardCatalogService:
     async def get_archetype_candidates(self, archetype: str, limit: int = 30) -> list[dict]:
         cards = await self.repository.search_by_name(query=archetype, limit=limit)
         return [self._serialize_card(card) for card in cards]
+
+    async def discover_cards_for_preferences(self, query: str, limit: int = 30) -> list[dict]:
+        cards = await self.repository.search_catalog(query=query, limit=limit)
+        return [self._serialize_card(card) for card in cards]
