@@ -1,6 +1,11 @@
 Analyze the following conversation history and produce the next JSON response.
 
+Known session context:
+{session_context}
+
 Conversation history:
 {conversation_history}
 
 If tool results are already present in the conversation history, use them before deciding whether another tool is necessary.
+Do not ask again for information that is already available in the known session context unless you need clarification.
+If the known session context is already sufficient, prefer moving the conversation forward.

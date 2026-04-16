@@ -3,6 +3,7 @@ import json
 from app.schemas.chat import (ChatGenerationStatus,
                               ChatMessageExchangeResponse, ChatMessageResponse)
 from app.services.chat_ai_service import ChatAIService
+from app.services.chat_context_service import ChatContextService
 from app.services.chat_service import ChatService
 from app.services.chat_tool_service import ChatToolService
 from app.services.generated_deck_service import GeneratedDeckService
@@ -13,6 +14,7 @@ class ChatOrchestratorService:
     def __init__(self, db: AsyncSession):
         self.chat_service = ChatService(db)
         self.chat_ai_service = ChatAIService()
+        self.chat_context_service = ChatContextService()
         self.chat_tool_service = ChatToolService(db)
         self.generated_deck_service = GeneratedDeckService(db)
 
@@ -27,7 +29,12 @@ class ChatOrchestratorService:
         )
 
         messages = await self.chat_service.list_messages_by_session(session_id=session_id)
-        first_step = self.chat_ai_service.get_next_step(messages=messages)
+        session_context = self.chat_context_service.build_context(
+            messages=messages)
+
+        first_step = self.chat_ai_service.get_next_step(messages=messages,
+                                                        session_context=session_context,
+                                                        )
 
         if first_step.get("type") == "tool_call":
             tool_call = self.chat_ai_service.parse_tool_call(first_step)
@@ -48,7 +55,12 @@ class ChatOrchestratorService:
             )
 
             messages = await self.chat_service.list_messages_by_session(session_id=session_id)
-            second_step = self.chat_ai_service.get_next_step(messages=messages)
+            session_context = self.chat_context_service.build_context(
+                messages=messages)
+
+            second_step = self.chat_ai_service.get_next_step(messages=messages,
+                                                             session_context=session_context,
+                                                             )
             final_answer = self.chat_ai_service.parse_final_answer(second_step)
         else:
             final_answer = self.chat_ai_service.parse_final_answer(first_step)
@@ -57,6 +69,24 @@ class ChatOrchestratorService:
             session_id=session_id,
             content=final_answer.reply,
         )
+
+        # salva snapshot simples de contexto inferido
+        if final_answer.deck_request is not None:
+            await self.chat_service.create_assistant_message(
+                session_id=session_id,
+                content="[CONTEXT_JSON] " + json.dumps(
+                    {
+                        "archetype": final_answer.deck_request.archetype,
+                        "play_style": final_answer.deck_request.play_style,
+                        "format": final_answer.deck_request.format,
+                        "goal": final_answer.deck_request.goal,
+                        "difficulty": final_answer.deck_request.difficulty,
+                        "budget": final_answer.deck_request.budget,
+                        "notes": [],
+                    },
+                    ensure_ascii=False,
+                ),
+            )
 
         saved_deck = None
         invalid_cards: list[str] = []

@@ -5,6 +5,7 @@ from app.core.llm import get_groq_client
 from app.core.prompt_loader import load_prompt
 from app.models.chat_message import ChatMessage
 from app.schemas.chat import ChatFinalAnswerResponse, ChatToolCallResponse
+from app.schemas.chat_context import ChatSessionContext
 
 
 class ChatAIService:
@@ -17,13 +18,17 @@ class ChatAIService:
 
         return "\n".join(lines)
 
-    def _call_model(self, conversation_history: str) -> dict:
+    def _call_model(self, conversation_history: str,
+                    session_context: ChatSessionContext) -> dict:
         client = get_groq_client()
 
         system_prompt = load_prompt("chat/system.txt")
         user_template = load_prompt("chat/user_template.txt")
         user_prompt = user_template.format(
-            conversation_history=conversation_history)
+            conversation_history=conversation_history,
+            session_context=json.dumps(
+                session_context.model_dump(), ensure_ascii=False, indent=2),
+        )
 
         response = client.chat.completions.create(
             model=settings.groq_model,
@@ -38,9 +43,13 @@ class ChatAIService:
         content = response.choices[0].message.content or "{}"
         return json.loads(content)
 
-    def get_next_step(self, messages: list[ChatMessage]) -> dict:
+    def get_next_step(self, messages: list[ChatMessage],
+                      session_context: ChatSessionContext,
+                      ) -> dict:
         conversation_history = self._build_conversation_history(messages)
-        return self._call_model(conversation_history=conversation_history)
+        return self._call_model(conversation_history=conversation_history,
+                                session_context=session_context,
+                                )
 
     def parse_tool_call(self, payload: dict) -> ChatToolCallResponse:
         return ChatToolCallResponse(**payload)
