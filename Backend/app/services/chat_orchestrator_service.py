@@ -95,6 +95,11 @@ class ChatOrchestratorService:
                         "goal": final_answer.deck_request.goal if final_answer.deck_request else None,
                         "difficulty": final_answer.deck_request.difficulty if final_answer.deck_request else None,
                         "budget": final_answer.deck_request.budget if final_answer.deck_request else None,
+                        "last_intent": final_answer.intent,
+                        "last_reply_summary": final_answer.reply[:160],
+                        "suggested_archetypes": [
+                            item.name for item in final_answer.suggested_archetypes
+                        ],
                         "notes": [
                             f"Sugestão anterior: {item.name} - {item.reason}"
                             for item in final_answer.suggested_archetypes

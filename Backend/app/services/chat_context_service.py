@@ -32,6 +32,15 @@ class ChatContextService:
                 context.difficulty = data.get(
                     "difficulty") or context.difficulty
                 context.budget = data.get("budget") or context.budget
+                context.last_intent = data.get(
+                    "last_intent") or context.last_intent
+                context.last_reply_summary = data.get(
+                    "last_reply_summary") or context.last_reply_summary
+
+                suggested = data.get("suggested_archetypes") or []
+                for item in suggested:
+                    if item and item not in context.suggested_archetypes:
+                        context.suggested_archetypes.append(item)
 
                 notes = data.get("notes") or []
                 for note in notes:
