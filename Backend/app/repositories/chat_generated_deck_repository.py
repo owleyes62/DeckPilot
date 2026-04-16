@@ -65,3 +65,21 @@ class ChatGeneratedDeckRepository:
             .order_by(ChatGeneratedDeck.generation_index.asc())
         )
         return list(result.scalars().all())
+
+    async def get_by_session_and_generation_index(
+            self,
+        session_id: int,
+        generation_index: int,
+    ) -> ChatGeneratedDeck | None:
+        result = await self.db.execute(
+            select(ChatGeneratedDeck)
+            .options(
+                selectinload(ChatGeneratedDeck.deck)
+                .selectinload(Deck.deck_cards)
+                .selectinload(DeckCard.card)
+            )
+            .where(ChatGeneratedDeck.session_id == session_id)
+            .where(ChatGeneratedDeck.generation_index == generation_index)
+            .limit(1)
+        )
+        return result.scalar_one_or_none()

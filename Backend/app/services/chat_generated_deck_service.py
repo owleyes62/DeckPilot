@@ -1,8 +1,11 @@
 from app.repositories.chat_generated_deck_repository import \
     ChatGeneratedDeckRepository
+from app.schemas.card import CardResponse
 from app.schemas.chat import (ChatGeneratedDeckHistoryItem,
                               ChatGeneratedDeckHistoryResponse,
+                              ChatSavedDeckCard, ChatSavedDeckDetail,
                               ChatSavedDeckSummary)
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -62,4 +65,39 @@ class ChatGeneratedDeckService:
         return ChatGeneratedDeckHistoryResponse(
             session_id=session_id,
             items=items,
+        )
+
+    async def get_generated_deck_by_generation_index(
+        self,
+        session_id: int,
+        generation_index: int,
+    ) -> ChatSavedDeckDetail:
+        link = await self.repository.get_by_session_and_generation_index(
+            session_id=session_id,
+            generation_index=generation_index,
+        )
+
+        if not link or not link.deck:
+            raise HTTPException(
+                status_code=404, detail="Generated deck version not found")
+
+        deck = link.deck
+
+        return ChatSavedDeckDetail(
+            id=deck.id,
+            name=deck.name,
+            archetype=deck.archetype,
+            play_style=deck.play_style,
+            format=deck.format,
+            win_condition=deck.win_condition,
+            how_to_pilot=deck.how_to_pilot,
+            source=deck.source,
+            deck_cards=[
+                ChatSavedDeckCard(
+                    copies=item.copies,
+                    section=item.section,
+                    card=CardResponse.model_validate(item.card),
+                )
+                for item in deck.deck_cards
+            ],
         )
