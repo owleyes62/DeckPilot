@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Any, Literal
 
+from app.schemas.card import CardResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
@@ -121,11 +122,30 @@ class ChatGenerationStatus(BaseModel):
     message: str
 
 
+class ChatSavedDeckCard(BaseModel):
+    copies: int
+    section: str
+    card: CardResponse
+
+
+class ChatSavedDeckDetail(BaseModel):
+    id: int
+    name: str
+    archetype: str
+    play_style: str
+    format: str
+    win_condition: str | None = None
+    how_to_pilot: str | None = None
+    source: str
+    deck_cards: list[ChatSavedDeckCard]
+
+
 class ChatMessageExchangeResponse(BaseModel):
     session_id: int
     user_message: ChatMessageResponse
     assistant_message: ChatMessageResponse
     ai_response: ChatFinalAnswerResponse
     saved_deck: ChatSavedDeckSummary | None = None
+    saved_deck_detail: ChatSavedDeckDetail | None = None
     invalid_cards: list[str] = []
     generation_status: ChatGenerationStatus

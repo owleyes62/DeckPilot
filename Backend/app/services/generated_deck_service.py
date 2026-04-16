@@ -1,6 +1,8 @@
 from app.repositories.card_repository import CardRepository
-from app.schemas.chat import ChatGeneratedDeck, ChatSavedDeckSummary
-from app.schemas.deck import DeckCreate, DeckListResponse
+from app.schemas.card import CardResponse
+from app.schemas.chat import (ChatGeneratedDeck, ChatSavedDeckCard,
+                              ChatSavedDeckDetail, ChatSavedDeckSummary)
+from app.schemas.deck import DeckCreate
 from app.schemas.deck_card import DeckCardCreate
 from app.services.deck_service import DeckService
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +17,7 @@ class GeneratedDeckService:
     async def validate_and_save_generated_deck(
         self,
         generated_deck: ChatGeneratedDeck,
-    ) -> tuple[ChatSavedDeckSummary | None, list[str], str]:
+    ) -> tuple[ChatSavedDeckSummary | None, ChatSavedDeckDetail | None, list[str], str]:
         valid_cards: list[DeckCardCreate] = []
         invalid_cards: list[str] = []
 
@@ -35,7 +37,7 @@ class GeneratedDeckService:
             )
 
         if not valid_cards:
-            return None, invalid_cards, "Nenhuma carta gerada foi encontrada no catálogo local."
+            return None, None, invalid_cards, "Nenhuma carta gerada foi encontrada no catálogo local."
 
         main_count = sum(
             card.copies for card in valid_cards if card.section == "main")
@@ -45,17 +47,17 @@ class GeneratedDeckService:
             card.copies for card in valid_cards if card.section == "side")
 
         if main_count < 40:
-            return None, invalid_cards, (
+            return None, None, invalid_cards, (
                 "O deck gerado ficou com menos de 40 cartas no main deck após a validação."
             )
 
         if extra_count > 15:
-            return None, invalid_cards, (
+            return None, None, invalid_cards, (
                 "O deck gerado ficou com mais de 15 cartas no extra deck após a validação."
             )
 
         if side_count > 15:
-            return None, invalid_cards, (
+            return None, None, invalid_cards, (
                 "O deck gerado ficou com mais de 15 cartas no side deck após a validação."
             )
 
@@ -71,20 +73,42 @@ class GeneratedDeckService:
         )
 
         saved_deck = await self.deck_service.create_deck(payload)
+        saved_deck_full = await self.deck_service.get_deck_by_id(saved_deck.id)
 
+        message = "Deck gerado e salvo com sucesso."
         if invalid_cards:
             message = (
                 "Deck salvo com sucesso, mas algumas cartas sugeridas pela IA não foram encontradas no catálogo."
             )
 
-        return (ChatSavedDeckSummary(
+        summary = ChatSavedDeckSummary(
             id=saved_deck.id,
             name=saved_deck.name,
             archetype=saved_deck.archetype,
             play_style=saved_deck.play_style,
             format=saved_deck.format,
             source=saved_deck.source,
-        ),
-            invalid_cards,
-            message,
         )
+
+        detail = None
+        if saved_deck_full:
+            detail = ChatSavedDeckDetail(
+                id=saved_deck_full.id,
+                name=saved_deck_full.name,
+                archetype=saved_deck_full.archetype,
+                play_style=saved_deck_full.play_style,
+                format=saved_deck_full.format,
+                win_condition=saved_deck_full.win_condition,
+                how_to_pilot=saved_deck_full.how_to_pilot,
+                source=saved_deck_full.source,
+                deck_cards=[
+                    ChatSavedDeckCard(
+                        copies=item.copies,
+                        section=item.section,
+                        card=CardResponse.model_validate(item.card),
+                    )
+                    for item in saved_deck_full.deck_cards
+                ],
+            )
+
+        return summary, detail, invalid_cards, message

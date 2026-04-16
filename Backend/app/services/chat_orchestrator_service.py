@@ -111,6 +111,7 @@ class ChatOrchestratorService:
             )
 
         saved_deck = None
+        saved_deck_detail = None
         invalid_cards: list[str] = []
         generation_status = ChatGenerationStatus(
             attempted=False,
@@ -119,7 +120,7 @@ class ChatOrchestratorService:
         )
 
         if final_answer.generated_deck is not None:
-            saved_deck, invalid_cards, status_message = await self.generated_deck_service.validate_and_save_generated_deck(
+            saved_deck, saved_deck_detail, invalid_cards, status_message = await self.generated_deck_service.validate_and_save_generated_deck(
                 final_answer.generated_deck)
 
             generation_status = ChatGenerationStatus(
@@ -135,6 +136,7 @@ class ChatOrchestratorService:
                 assistant_message),
             ai_response=final_answer,
             saved_deck=saved_deck,
+            saved_deck_detail=saved_deck_detail,
             invalid_cards=invalid_cards,
             generation_status=generation_status,
         )
