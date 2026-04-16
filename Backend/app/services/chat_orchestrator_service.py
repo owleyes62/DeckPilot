@@ -4,6 +4,7 @@ from app.schemas.chat import (ChatGenerationStatus,
                               ChatMessageExchangeResponse, ChatMessageResponse)
 from app.services.chat_ai_service import ChatAIService
 from app.services.chat_context_service import ChatContextService
+from app.services.chat_deck_context_service import ChatDeckContextService
 from app.services.chat_service import ChatService
 from app.services.chat_title_service import ChatTitleService
 from app.services.chat_tool_service import ChatToolService
@@ -18,6 +19,7 @@ class ChatOrchestratorService:
         self.chat_service = ChatService(db)
         self.chat_ai_service = ChatAIService()
         self.chat_context_service = ChatContextService()
+        self.chat_deck_context_service = ChatDeckContextService()
         self.chat_title_service = ChatTitleService()
         self.chat_tool_service = ChatToolService(db)
         self.generated_deck_service = GeneratedDeckService(db)
@@ -33,6 +35,10 @@ class ChatOrchestratorService:
         )
 
         messages = await self.chat_service.list_messages_by_session(session_id=session_id)
+        session_context = self.chat_context_service.build_context(
+            messages=messages)
+        last_saved_deck = self.chat_deck_context_service.extract_last_saved_deck(
+            messages=messages)
 
         visible_user_messages = [m for m in messages if m.role == "user"]
         if len(visible_user_messages) == 1:
@@ -49,6 +55,7 @@ class ChatOrchestratorService:
             step = self.chat_ai_service.get_next_step(
                 messages=messages,
                 session_context=session_context,
+                last_saved_deck=last_saved_deck,
             )
 
             if step.get("type") == "tool_call":
@@ -127,6 +134,15 @@ class ChatOrchestratorService:
                 attempted=True,
                 saved=saved_deck is not None,
                 message=status_message,
+            )
+
+        if saved_deck_detail is not None:
+            await self.chat_service.create_assistant_message(
+                session_id=session_id,
+                content="[SAVED_DECK_JSON] " + json.dumps(
+                    saved_deck_detail.model_dump(),
+                    ensure_ascii=False,
+                ),
             )
 
         return ChatMessageExchangeResponse(
