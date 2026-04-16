@@ -4,6 +4,7 @@ from app.schemas.chat import ChatMessageExchangeResponse, ChatMessageResponse
 from app.services.chat_ai_service import ChatAIService
 from app.services.chat_service import ChatService
 from app.services.chat_tool_service import ChatToolService
+from app.services.generated_deck_service import GeneratedDeckService
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -12,6 +13,7 @@ class ChatOrchestratorService:
         self.chat_service = ChatService(db)
         self.chat_ai_service = ChatAIService()
         self.chat_tool_service = ChatToolService(db)
+        self.generated_deck_service = GeneratedDeckService(db)
 
     async def send_user_message(
         self,
@@ -54,6 +56,14 @@ class ChatOrchestratorService:
             session_id=session_id,
             content=final_answer.reply,
         )
+
+        saved_deck = None
+        invalid_cards: list[str] = []
+
+        if final_answer.generated_deck is not None:
+            saved_deck, invalid_cards = await self.generated_deck_service.validate_and_save_generated_deck(
+                final_answer.generated_deck
+            )
 
         return ChatMessageExchangeResponse(
             session_id=session_id,

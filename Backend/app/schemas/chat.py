@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -84,8 +84,39 @@ class ChatAIResponse(BaseModel):
     generated_deck: ChatGeneratedDeck | None = None
 
 
+class ChatToolCallResponse(BaseModel):
+    type: str
+    tool_name: str
+    arguments: dict[str, Any]
+
+
+class ChatFinalAnswerResponse(BaseModel):
+    type: str
+    reply: str
+    intent: Literal[
+        "known_deck_request",
+        "deck_discovery_request",
+        "refine_existing_deck",
+        "general_chat",
+    ]
+    should_ask_questions: bool
+    questions: list[str]
+    suggested_archetypes: list[ChatSuggestedArchetype]
+    deck_request: ChatDeckRequest | None = None
+    generated_deck: ChatGeneratedDeck | None = None
+
+
+class ChatSavedDeckSummary(BaseModel):
+    id: int
+    name: str
+    archetype: str
+    play_style: str
+    format: str
+    source: str
+
+
 class ChatMessageExchangeResponse(BaseModel):
     session_id: int
     user_message: ChatMessageResponse
     assistant_message: ChatMessageResponse
-    ai_response: ChatAIResponse
+    ai_response: ChatFinalAnswerResponse
