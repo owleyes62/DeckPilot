@@ -1,13 +1,8 @@
 import { ChatMessageItem } from "./chat-message-item";
-
-type Message = {
-  id: number;
-  role: string;
-  content: string;
-};
+import type { ChatMessage } from "@/features/chat/types/chat.types";
 
 type ChatMessageListProps = {
-  messages: Message[];
+  messages: ChatMessage[];
 };
 
 export function ChatMessageList({ messages }: ChatMessageListProps) {

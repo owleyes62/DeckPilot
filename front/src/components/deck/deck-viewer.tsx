@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { ChatSavedDeckDetail } from "@/features/chat/types/chat.types";
 import { DeckCardPreview } from "./deck-card-preview";
 import { DeckSection } from "./deck-section";
 
@@ -12,57 +13,72 @@ type DeckCard = {
   description?: string;
 };
 
-const mockDeck = {
-  name: "Branded Consistente Local",
-  archetype: "Branded",
-  playStyle: "Consistente",
-  winCondition:
-    "Estabelecer pressão com fusões e manter follow-up para os próximos turnos.",
-  howToPilot:
-    "Priorize starters consistentes e preserve recursos importantes para o turno 2.",
-  main: [
-    {
-      name: "Fallen of Albaz",
-      copies: 2,
-      imageSmallUrl:
-        "https://images.ygoprodeck.com/images/cards_small/68468459.jpg",
-      imageUrl: "https://images.ygoprodeck.com/images/cards/68468459.jpg",
-      description:
-        'If this card is Normal or Special Summoned: You can discard 1 card; Fusion Summon 1 Fusion Monster from your Extra Deck, using monsters from either field as material, including this card, but you cannot use other monsters you control as Fusion Material. You can only use this effect of "Fallen of Albaz" once per turn.',
-    },
-    {
-      name: "Branded Fusion",
-      copies: 3,
-      imageSmallUrl:
-        "https://images.ygoprodeck.com/images/cards_small/44362883.jpg",
-      imageUrl: "https://images.ygoprodeck.com/images/cards/44362883.jpg",
-      description:
-        'Fusion Summon 1 Fusion Monster that mentions "Fallen of Albaz" as material from your Extra Deck, using 2 monsters from your hand, Deck, or field as Fusion Material.',
-    },
-  ],
-  extra: [
-    {
-      name: "Albion the Branded Dragon",
-      copies: 1,
-      imageSmallUrl:
-        "https://images.ygoprodeck.com/images/cards_small/38524592.jpg",
-      imageUrl: "https://images.ygoprodeck.com/images/cards/38524592.jpg",
-      description:
-        'Fallen of Albaz + 1 LIGHT monster. If this card is Fusion Summoned: You can Fusion Summon 1 Level 8 or lower Fusion Monster from your Extra Deck, except "Albion the Branded Dragon", by banishing Fusion Materials listed on it from your field, GY, and/or face-up banished cards.',
-    },
-  ],
-  side: [],
+type DeckViewerProps = {
+  deck?: ChatSavedDeckDetail | null;
 };
 
-export function DeckViewer() {
+export function DeckViewer({ deck }: DeckViewerProps) {
   const [selectedCard, setSelectedCard] = useState<DeckCard | null>(null);
+
+  const parsedDeck = useMemo(() => {
+    if (!deck) return null;
+
+    const main = deck.deck_cards
+      .filter((item) => item.section === "main")
+      .map((item) => ({
+        name: item.card.name,
+        copies: item.copies,
+        imageSmallUrl: item.card.image_small_url ?? undefined,
+        imageUrl: item.card.image_url ?? undefined,
+        description: item.card.description ?? undefined,
+      }));
+
+    const extra = deck.deck_cards
+      .filter((item) => item.section === "extra")
+      .map((item) => ({
+        name: item.card.name,
+        copies: item.copies,
+        imageSmallUrl: item.card.image_small_url ?? undefined,
+        imageUrl: item.card.image_url ?? undefined,
+        description: item.card.description ?? undefined,
+      }));
+
+    const side = deck.deck_cards
+      .filter((item) => item.section === "side")
+      .map((item) => ({
+        name: item.card.name,
+        copies: item.copies,
+        imageSmallUrl: item.card.image_small_url ?? undefined,
+        imageUrl: item.card.image_url ?? undefined,
+        description: item.card.description ?? undefined,
+      }));
+
+    return {
+      name: deck.name,
+      archetype: deck.archetype,
+      playStyle: deck.play_style,
+      winCondition: deck.win_condition ?? "Não informado.",
+      howToPilot: deck.how_to_pilot ?? "Não informado.",
+      main,
+      extra,
+      side,
+    };
+  }, [deck]);
+
+  if (!parsedDeck) {
+    return (
+      <div className="flex h-[80vh] items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-center text-sm text-zinc-500">
+        O deck gerado aparecerá aqui quando a IA salvar uma versão válida.
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex h-[80vh] flex-col rounded-2xl border border-zinc-800 bg-zinc-900">
       <div className="border-b border-zinc-800 p-4">
-        <h2 className="text-lg font-semibold">{mockDeck.name}</h2>
+        <h2 className="text-lg font-semibold">{parsedDeck.name}</h2>
         <p className="text-sm text-zinc-400">
-          {mockDeck.archetype} • {mockDeck.playStyle}
+          {parsedDeck.archetype} • {parsedDeck.playStyle}
         </p>
       </div>
 
@@ -73,7 +89,7 @@ export function DeckViewer() {
               Condição de vitória
             </h3>
             <p className="mt-1 text-sm text-zinc-400">
-              {mockDeck.winCondition}
+              {parsedDeck.winCondition}
             </p>
           </div>
 
@@ -82,7 +98,7 @@ export function DeckViewer() {
               Como pilotar
             </h3>
             <p className="mt-1 text-sm text-zinc-400">
-              {mockDeck.howToPilot}
+              {parsedDeck.howToPilot}
             </p>
           </div>
         </div>
@@ -90,17 +106,17 @@ export function DeckViewer() {
         <div className="space-y-6">
           <DeckSection
             title="Main Deck"
-            cards={mockDeck.main}
+            cards={parsedDeck.main}
             onSelectCard={setSelectedCard}
           />
           <DeckSection
             title="Extra Deck"
-            cards={mockDeck.extra}
+            cards={parsedDeck.extra}
             onSelectCard={setSelectedCard}
           />
           <DeckSection
             title="Side Deck"
-            cards={mockDeck.side}
+            cards={parsedDeck.side}
             onSelectCard={setSelectedCard}
           />
         </div>
