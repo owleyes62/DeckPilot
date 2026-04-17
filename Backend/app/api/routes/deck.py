@@ -1,10 +1,12 @@
 from app.core.database import get_db
 from app.schemas.deck import DeckCreate, DeckListResponse, DeckResponse
 from app.schemas.deck_validation import DeckValidationResponse
-from app.services.deck_service import DeckService
-from app.services.deck_validation_service import DeckValidationService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from Backend.app.services.decks.deck_service import DeckService
+from Backend.app.services.decks.deck_validation_service import \
+    DeckValidationService
 
 router = APIRouter(prefix="/decks", tags=["Decks"])
 

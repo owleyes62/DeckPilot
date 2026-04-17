@@ -3,11 +3,14 @@ from app.schemas.chat import (ChatGeneratedDeckHistoryResponse,
                               ChatMessageCreate, ChatMessageExchangeResponse,
                               ChatMessageResponse, ChatSavedDeckDetail,
                               ChatSessionCreate, ChatSessionResponse)
-from app.services.chat_generated_deck_service import ChatGeneratedDeckService
-from app.services.chat_orchestrator_service import ChatOrchestratorService
-from app.services.chat_service import ChatService
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from Backend.app.services.chat.chat_generated_deck_service import \
+    ChatGeneratedDeckService
+from Backend.app.services.chat.chat_orchestrator_service import \
+    ChatOrchestratorService
+from Backend.app.services.chat.chat_service import ChatService
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
