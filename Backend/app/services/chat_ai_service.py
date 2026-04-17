@@ -1,7 +1,7 @@
 import json
 
 from app.core.config import settings
-from app.core.llm import get_groq_client
+from app.core.llm import get_chat_llm_client
 from app.core.prompt_loader import load_prompt
 from app.models.chat_message import ChatMessage
 from app.schemas.chat import (ChatFinalAnswerResponse, ChatSavedDeckDetail,
@@ -23,7 +23,7 @@ class ChatAIService:
                     session_context: ChatSessionContext,
                     last_saved_deck: ChatSavedDeckDetail | None,
                     ) -> dict:
-        client = get_groq_client()
+        client = get_chat_llm_client()
 
         system_prompt = load_prompt("chat/system.txt")
         user_template = load_prompt("chat/user_template.txt")

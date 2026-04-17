@@ -39,17 +39,10 @@ class GeneratedDeckService:
         if not valid_cards:
             return None, None, invalid_cards, "Nenhuma carta gerada foi encontrada no catálogo local."
 
-        main_count = sum(
-            card.copies for card in valid_cards if card.section == "main")
         extra_count = sum(
             card.copies for card in valid_cards if card.section == "extra")
         side_count = sum(
             card.copies for card in valid_cards if card.section == "side")
-
-        if main_count < 40:
-            return None, None, invalid_cards, (
-                "O deck gerado ficou com menos de 40 cartas no main deck após a validação."
-            )
 
         if extra_count > 15:
             return None, None, invalid_cards, (

@@ -1,5 +1,20 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# class Settings(BaseSettings):
+#     app_name: str = "DeckPilot API"
+#     app_version: str = "0.1.0"
+#     debug: bool = True
+
+#     database_url: str = ""
+#     groq_api_key: str = ""
+#     llm_model: str = "llama-3.3-70b-versatile"
+
+#     model_config = SettingsConfigDict(
+#         env_file=".env",
+#         env_file_encoding="utf-8",
+#         case_sensitive=False,
+#     )
+
 
 class Settings(BaseSettings):
     app_name: str = "DeckPilot API"
@@ -7,13 +22,18 @@ class Settings(BaseSettings):
     debug: bool = True
 
     database_url: str = ""
+
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
+
+    openrouter_api_key: str = ""
+    llm_model: str = "google/gemma-3-27b-it:free"
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
+        extra="ignore",
     )
 
 

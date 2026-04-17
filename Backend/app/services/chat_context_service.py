@@ -47,4 +47,23 @@ class ChatContextService:
                     if note not in context.notes:
                         context.notes.append(note)
 
+            if content.startswith("[GENERATION_FEEDBACK]"):
+                raw_json = content.removeprefix(
+                    "[GENERATION_FEEDBACK]").strip()
+
+                try:
+                    data: dict[str, Any] = json.loads(raw_json)
+                except json.JSONDecodeError:
+                    continue
+
+                feedback_message = data.get("message")
+                if feedback_message:
+                    context.notes.append(
+                        f"Falha de geração anterior: {feedback_message}")
+
+                invalid_cards = data.get("invalid_cards") or []
+                for card_name in invalid_cards:
+                    context.notes.append(
+                        f"Carta inválida anterior: {card_name}")
+
         return context

@@ -1,15 +1,20 @@
-Analyze the following conversation history and produce the next JSON response.
+Analyze the conversation and return the next JSON response.
 
 Known session context:
 {session_context}
 
+Last saved deck:
+{last_saved_deck}
+
 Conversation history:
 {conversation_history}
 
-- If tool results are already present in the conversation history, use them before deciding whether another tool is necessary.
-- Do not ask again for information that is already available in the known session context unless you need clarification.
-- If the user has already chosen or strongly implied an archetype, prefer moving from discovery into deck generation.
-- If archetypes were already suggested earlier, avoid repeating the same suggestions unless there is a clear reason.
-- If the user is asking for help choosing a deck, prefer suggesting a small number of practical archetype options before generating a final deck.
-- If a last saved deck is available and the user asks for changes such as more consistency, lower budget, more aggression, easier piloting, or fewer bricks, use that deck as the starting point for refinement.
-- If the known session context is already sufficient, prefer moving the conversation forward.
+Rules:
+- Use existing tool results before asking for more tools.
+- Do not ask again for information already present in the session context unless clarification is needed.
+- Avoid repeating previous archetype suggestions.
+- If the user already chose or strongly implied an archetype, move toward deck generation.
+- If the user asks to change or improve an existing generated deck, prefer refine_existing_deck.
+- If a saved deck exists and the user asks for changes like more consistency, lower budget, more aggression, easier piloting, exact card list, or fewer bricks, use that deck as the base.
+- If enough context already exists, continue the flow instead of restarting discovery.
+- If unsure about card names, use tools before generating the final answer.

@@ -1,7 +1,7 @@
 import json
 
 from app.core.config import settings
-from app.core.llm import get_groq_client
+from app.core.llm import get_doctor_llm_client
 from app.core.prompt_loader import load_prompt
 from app.models.deck import Deck
 from app.schemas.deck_doctor import DeckDoctorAnalysisResponse
@@ -45,7 +45,7 @@ class DeckDoctorAIService:
         deck: Deck,
         analysis: DeckDoctorAnalysisResponse,
     ) -> DeckDoctorAIResponse:
-        client = get_groq_client()
+        client = get_doctor_llm_client()
 
         system_prompt = load_prompt("deck_doctor/system.txt")
         user_template = load_prompt("deck_doctor/user_template.txt")
@@ -55,7 +55,7 @@ class DeckDoctorAIService:
         user_prompt = user_template.format(structured_input=structured_input)
 
         response = client.chat.completions.create(
-            model=settings.groq_model,
+            model=settings.llm_model,
             temperature=0.4,
             response_format={"type": "json_object"},
             messages=[
@@ -63,7 +63,6 @@ class DeckDoctorAIService:
                 {"role": "user", "content": user_prompt},
             ],
         )
-
         content = response.choices[0].message.content or "{}"
         parsed = json.loads(content)
 
