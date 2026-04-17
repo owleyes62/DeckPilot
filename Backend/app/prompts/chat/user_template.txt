@@ -10,11 +10,10 @@ Conversation history:
 {conversation_history}
 
 Rules:
-- Use existing tool results before asking for more tools.
 - Do not ask again for information already present in the session context unless clarification is needed.
 - Avoid repeating previous archetype suggestions.
 - If the user already chose or strongly implied an archetype, move toward deck generation.
 - If the user asks to change or improve an existing generated deck, prefer refine_existing_deck.
 - If a saved deck exists and the user asks for changes like more consistency, lower budget, more aggression, easier piloting, exact card list, or fewer bricks, use that deck as the base.
 - If enough context already exists, continue the flow instead of restarting discovery.
-- If unsure about card names, use tools before generating the final answer.
+- Keep the response practical and concise.
