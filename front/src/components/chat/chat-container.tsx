@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createChatSession, sendChatMessage } from "@/features/chat/api/chat-api";
+import {
+  createChatSession,
+  sendChatMessage,
+} from "@/features/chat/api/chat-api";
 import type {
   ChatMessage,
+  ChatMessageExchangeResponse,
   ChatSavedDeckDetail,
 } from "@/features/chat/types/chat.types";
 import { ChatInput } from "./chat-input";
@@ -16,6 +20,8 @@ type ChatContainerProps = {
 export function ChatContainer({ onDeckChange }: ChatContainerProps) {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [lastExchange, setLastExchange] =
+    useState<ChatMessageExchangeResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -51,6 +57,7 @@ export function ChatContainer({ onDeckChange }: ChatContainerProps) {
         response.assistant_message,
       ]);
 
+      setLastExchange(response);
       onDeckChange(response.saved_deck_detail ?? null);
     } finally {
       setIsLoading(false);
@@ -67,7 +74,7 @@ export function ChatContainer({ onDeckChange }: ChatContainerProps) {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <ChatMessageList messages={messages} />
+        <ChatMessageList messages={messages} lastExchange={lastExchange} />
       </div>
 
       <div className="border-t border-zinc-800 p-4">
