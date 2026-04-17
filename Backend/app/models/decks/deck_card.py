@@ -7,8 +7,8 @@ from sqlalchemy import (DateTime, ForeignKey, Integer, String,
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from app.models.card import Card
-    from app.models.deck import Deck
+    from Backend.app.models.cards.card import Card
+    from Backend.app.models.decks.deck import Deck
 
 
 class DeckCard(Base):

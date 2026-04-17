@@ -1,4 +1,4 @@
-from app.models.chat_message import ChatMessage
+from Backend.app.models.chat.chat_message import ChatMessage
 
 
 class ChatTitleService:

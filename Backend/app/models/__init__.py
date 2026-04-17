@@ -1,11 +1,11 @@
-from app.models.card import Card
-from app.models.chat_generated_deck import ChatGeneratedDeck
-from app.models.chat_message import ChatMessage
-from app.models.chat_session import ChatSession
-from app.models.deck import Deck
-from app.models.deck_card import DeckCard
-from app.models.deck_diagnosis import DeckDiagnosis
-from app.models.simulation_run import SimulationRun
+from Backend.app.models.cards.card import Card
+from Backend.app.models.chat.chat_generated_deck import ChatGeneratedDeck
+from Backend.app.models.chat.chat_message import ChatMessage
+from Backend.app.models.chat.chat_session import ChatSession
+from Backend.app.models.decks.deck import Deck
+from Backend.app.models.decks.deck_card import DeckCard
+from Backend.app.models.decks.deck_diagnosis import DeckDiagnosis
+from Backend.app.models.decks.simulation_run import SimulationRun
 
 __all__ = [
     "Deck",

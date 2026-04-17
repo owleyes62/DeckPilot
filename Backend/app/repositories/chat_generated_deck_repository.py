@@ -1,9 +1,10 @@
-from app.models.chat_generated_deck import ChatGeneratedDeck
-from app.models.deck import Deck
-from app.models.deck_card import DeckCard
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
+from Backend.app.models.chat.chat_generated_deck import ChatGeneratedDeck
+from Backend.app.models.decks.deck import Deck
+from Backend.app.models.decks.deck_card import DeckCard
 
 
 class ChatGeneratedDeckRepository:

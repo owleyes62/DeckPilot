@@ -1,6 +1,7 @@
-from app.models.card import Card
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from Backend.app.models.cards.card import Card
 
 
 class CardRepository:

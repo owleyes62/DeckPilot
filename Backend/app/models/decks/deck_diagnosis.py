@@ -6,7 +6,7 @@ from sqlalchemy import DateTime, ForeignKey, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from app.models.deck import Deck
+    from Backend.app.models.decks.deck import Deck
 
 
 class DeckDiagnosis(Base):

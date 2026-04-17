@@ -1,10 +1,11 @@
-from app.models.card import Card
-from app.models.deck import Deck
-from app.models.deck_card import DeckCard
 from app.schemas.deck import DeckCreate
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+
+from Backend.app.models.cards.card import Card
+from Backend.app.models.decks.deck import Deck
+from Backend.app.models.decks.deck_card import DeckCard
 
 
 class DeckRepository:

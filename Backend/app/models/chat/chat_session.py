@@ -6,8 +6,8 @@ from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from app.models.chat_generated_deck import ChatGeneratedDeck
-    from app.models.chat_message import ChatMessage
+    from Backend.app.models.chat.chat_generated_deck import ChatGeneratedDeck
+    from Backend.app.models.chat.chat_message import ChatMessage
 
 
 class ChatSession(Base):

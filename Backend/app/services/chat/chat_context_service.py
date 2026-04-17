@@ -1,8 +1,9 @@
 import json
 from typing import Any
 
-from app.models.chat_message import ChatMessage
 from app.schemas.chat_context import ChatSessionContext
+
+from Backend.app.models.chat.chat_message import ChatMessage
 
 
 class ChatContextService:
