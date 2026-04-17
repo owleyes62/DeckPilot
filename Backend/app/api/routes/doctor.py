@@ -1,12 +1,11 @@
 from app.core.database import get_db
 from app.schemas.deck_doctor import DeckDoctorAnalysisResponse
 from app.schemas.deck_doctor_ai import DeckDoctorAIResponse
+from app.services.ai.deck_doctor_ai_service import DeckDoctorAIService
+from app.services.decks.deck_doctor_service import DeckDoctorService
+from app.services.decks.deck_service import DeckService
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.services.ai.deck_doctor_ai_service import DeckDoctorAIService
-from Backend.app.services.decks.deck_doctor_service import DeckDoctorService
-from Backend.app.services.decks.deck_service import DeckService
 
 router = APIRouter(prefix="/doctor", tags=["Deck Doctor"])
 

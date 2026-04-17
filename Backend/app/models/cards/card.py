@@ -6,7 +6,7 @@ from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from Backend.app.models.decks.deck_card import DeckCard
+    from app.models.decks.deck_card import DeckCard
 
 
 class Card(Base):

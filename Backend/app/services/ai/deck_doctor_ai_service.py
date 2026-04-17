@@ -3,10 +3,9 @@ import json
 from app.core.config import settings
 from app.core.llm import get_doctor_llm_client
 from app.core.prompt_loader import load_prompt
+from app.models.decks.deck import Deck
 from app.schemas.deck_doctor import DeckDoctorAnalysisResponse
 from app.schemas.deck_doctor_ai import DeckDoctorAIResponse
-
-from Backend.app.models.decks.deck import Deck
 
 
 class DeckDoctorAIService:

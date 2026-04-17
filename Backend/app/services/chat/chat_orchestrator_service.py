@@ -2,18 +2,15 @@ import json
 
 from app.schemas.chat import (ChatGenerationStatus,
                               ChatMessageExchangeResponse, ChatMessageResponse)
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.services.ai.chat_ai_service import ChatAIService
-from Backend.app.services.chat.chat_context_service import ChatContextService
-from Backend.app.services.chat.chat_deck_context_service import \
-    ChatDeckContextService
-from Backend.app.services.chat.chat_generated_deck_service import \
+from app.services.ai.chat_ai_service import ChatAIService
+from app.services.chat.chat_context_service import ChatContextService
+from app.services.chat.chat_deck_context_service import ChatDeckContextService
+from app.services.chat.chat_generated_deck_service import \
     ChatGeneratedDeckService
-from Backend.app.services.chat.chat_service import ChatService
-from Backend.app.services.chat.chat_title_service import ChatTitleService
-from Backend.app.services.decks.generated_deck_service import \
-    GeneratedDeckService
+from app.services.chat.chat_service import ChatService
+from app.services.chat.chat_title_service import ChatTitleService
+from app.services.decks.generated_deck_service import GeneratedDeckService
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ChatOrchestratorService:

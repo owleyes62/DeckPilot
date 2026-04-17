@@ -1,9 +1,8 @@
 from app.schemas.card import CardResponse
 from app.schemas.chat import ChatSavedDeckCard, ChatSavedDeckDetail
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.services.chat.chat_generated_deck_service import \
+from app.services.chat.chat_generated_deck_service import \
     ChatGeneratedDeckService
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ChatDeckContextService:

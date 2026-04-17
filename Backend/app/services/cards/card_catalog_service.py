@@ -1,7 +1,6 @@
+from app.models.cards.card import Card
 from app.repositories.card_repository import CardRepository
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.models.cards.card import Card
 
 
 class CardCatalogService:

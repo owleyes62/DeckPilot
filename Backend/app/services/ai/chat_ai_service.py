@@ -3,11 +3,10 @@ import json
 from app.core.config import settings
 from app.core.llm import get_chat_llm_client
 from app.core.prompt_loader import load_prompt
+from app.models.chat.chat_message import ChatMessage
 from app.schemas.chat import (ChatFinalAnswerResponse, ChatSavedDeckDetail,
                               ChatToolCallResponse)
 from app.schemas.chat_context import ChatSessionContext
-
-from Backend.app.models.chat.chat_message import ChatMessage
 
 
 class ChatAIService:

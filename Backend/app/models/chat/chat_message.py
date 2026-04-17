@@ -6,7 +6,7 @@ from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from Backend.app.models.chat.chat_session import ChatSession
+    from app.models.chat.chat_session import ChatSession
 
 
 class ChatMessage(Base):

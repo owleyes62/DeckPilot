@@ -6,10 +6,10 @@ from sqlalchemy import DateTime, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from Backend.app.models.chat.chat_generated_deck import ChatGeneratedDeck
-    from Backend.app.models.decks.deck_card import DeckCard
-    from Backend.app.models.decks.deck_diagnosis import DeckDiagnosis
-    from Backend.app.models.decks.simulation_run import SimulationRun
+    from app.models.chat.chat_generated_deck import ChatGeneratedDeck
+    from app.models.decks.deck_card import DeckCard
+    from app.models.decks.deck_diagnosis import DeckDiagnosis
+    from app.models.decks.simulation_run import SimulationRun
 
 
 class Deck(Base):

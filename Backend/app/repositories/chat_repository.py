@@ -1,9 +1,8 @@
+from app.models.chat.chat_message import ChatMessage
+from app.models.chat.chat_session import ChatSession
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
-from Backend.app.models.chat.chat_message import ChatMessage
-from Backend.app.models.chat.chat_session import ChatSession
 
 
 class ChatRepository:

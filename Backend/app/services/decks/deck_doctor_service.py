@@ -1,7 +1,6 @@
+from app.models.decks.deck import Deck
 from app.schemas.deck_doctor import (DeckDoctorAnalysisResponse,
                                      DeckDoctorCounts, DeckDoctorIssue)
-
-from Backend.app.models.decks.deck import Deck
 
 
 class DeckDoctorService:

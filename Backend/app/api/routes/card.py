@@ -1,10 +1,9 @@
 from app.core.database import get_db
 from app.schemas.card import CardListResponse
+from app.services.cards.card_import_service import CardImportService
+from app.services.chat.card_service import CardService
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.services.cards.card_import_service import CardImportService
-from Backend.app.services.chat.card_service import CardService
 
 router = APIRouter(prefix="/cards", tags=["Cards"])
 

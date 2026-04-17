@@ -4,9 +4,8 @@ from app.schemas.chat import (ChatGeneratedDeck, ChatSavedDeckCard,
                               ChatSavedDeckDetail, ChatSavedDeckSummary)
 from app.schemas.deck import DeckCreate
 from app.schemas.deck_card import DeckCardCreate
+from app.services.decks.deck_service import DeckService
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from Backend.app.services.decks.deck_service import DeckService
 
 
 class GeneratedDeckService:

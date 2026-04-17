@@ -6,8 +6,8 @@ from sqlalchemy import DateTime, ForeignKey, Integer, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from Backend.app.models.chat.chat_session import ChatSession
-    from Backend.app.models.decks.deck import Deck
+    from app.models.chat.chat_session import ChatSession
+    from app.models.decks.deck import Deck
 
 
 class ChatGeneratedDeck(Base):
