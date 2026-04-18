@@ -4,6 +4,8 @@ from app.schemas.chat import (ChatGeneratedDeck, ChatSavedDeckCard,
                               ChatSavedDeckDetail, ChatSavedDeckSummary)
 from app.schemas.deck import DeckCreate
 from app.schemas.deck_card import DeckCardCreate
+from app.services.cards.card_import_service import CardImportService
+from app.services.decks.archetype_core_service import ArchetypeCoreService
 from app.services.decks.deck_service import DeckService
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +15,40 @@ class GeneratedDeckService:
         self.db = db
         self.card_repository = CardRepository(db)
         self.deck_service = DeckService(db)
+        self.archetype_core_service = ArchetypeCoreService()
+        self.card_import_service = CardImportService(db)
+
+    async def _find_or_import_card(self, card_name: str):
+        existing_card = await self.card_repository.get_by_name(card_name)
+        if existing_card:
+            return existing_card
+
+        json_entry = self.card_import_service.find_card_in_json_by_name(
+            card_name)
+        if json_entry:
+            return await self.card_import_service.import_card_from_json_entry(json_entry)
+
+        return None
+
+    async def _merge_with_archetype_core(
+        self,
+        generated_deck: ChatGeneratedDeck,
+    ) -> list[tuple[str, int, str]]:
+        merged: dict[tuple[str, str], int] = {}
+
+        for item in generated_deck.cards:
+            key = (item.name, item.section)
+            merged[key] = max(merged.get(key, 0), item.copies)
+
+        core_cards = self.archetype_core_service.get_core(
+            generated_deck.archetype)
+
+        for core_card in core_cards:
+            key = (core_card.name, core_card.section)
+            if key not in merged:
+                merged[key] = core_card.copies
+
+        return [(name, copies, section) for (name, section), copies in merged.items()]
 
     async def validate_and_save_generated_deck(
         self,

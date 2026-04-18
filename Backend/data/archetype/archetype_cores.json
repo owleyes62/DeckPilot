@@ -1,0 +1,36 @@
+{
+  "branded": [
+    { "name": "Fallen of Albaz", "copies": 2, "section": "main" },
+    { "name": "Branded Fusion", "copies": 3, "section": "main" },
+    { "name": "Aluber the Jester of Despia", "copies": 3, "section": "main" },
+    { "name": "Branded Opening", "copies": 2, "section": "main" },
+    { "name": "Branded in Red", "copies": 1, "section": "main" },
+    { "name": "Despian Tragedy", "copies": 1, "section": "main" },
+    { "name": "Tri-Brigade Mercourier", "copies": 1, "section": "main" },
+    { "name": "Mirrorjade the Iceblade Dragon", "copies": 2, "section": "extra" },
+    { "name": "Lubellion the Searing Dragon", "copies": 2, "section": "extra" },
+    { "name": "Albion the Branded Dragon", "copies": 2, "section": "extra" }
+  ],
+  "traptrix": [
+    { "name": "Traptrix Myrmeleo", "copies": 3, "section": "main" },
+    { "name": "Traptrix Mantis", "copies": 3, "section": "main" },
+    { "name": "Traptrix Pudica", "copies": 2, "section": "main" },
+    { "name": "Traptrip Garden", "copies": 1, "section": "main" },
+    { "name": "Bottomless Trap Hole", "copies": 2, "section": "main" },
+    { "name": "Floodgate Trap Hole", "copies": 2, "section": "main" },
+    { "name": "Traptrix Sera", "copies": 3, "section": "extra" },
+    { "name": "Traptrix Rafflesia", "copies": 2, "section": "extra" },
+    { "name": "Traptrix Pinguicula", "copies": 1, "section": "extra" }
+  ],
+  "swordsoul": [
+    { "name": "Swordsoul of Mo Ye", "copies": 3, "section": "main" },
+    { "name": "Swordsoul Strategist Longyuan", "copies": 2, "section": "main" },
+    { "name": "Swordsoul of Taia", "copies": 2, "section": "main" },
+    { "name": "Incredible Ecclesia, the Virtuous", "copies": 2, "section": "main" },
+    { "name": "Swordsoul Emergence", "copies": 3, "section": "main" },
+    { "name": "Swordsoul Blackout", "copies": 1, "section": "main" },
+    { "name": "Swordsoul Grandmaster - Chixiao", "copies": 2, "section": "extra" },
+    { "name": "Baronne de Fleur", "copies": 1, "section": "extra" },
+    { "name": "Swordsoul Supreme Sovereign - Chengying", "copies": 1, "section": "extra" }
+  ]
+}
