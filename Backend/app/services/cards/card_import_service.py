@@ -67,11 +67,6 @@ class CardImportService:
                 skipped += 1
                 continue
 
-            if existing:
-                await self.repository.update(existing, **payload)
-                updated += 1
-                continue
-
             await self.repository.create(**payload)
             created += 1
 
