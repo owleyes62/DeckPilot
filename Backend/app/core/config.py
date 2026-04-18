@@ -24,10 +24,10 @@ class Settings(BaseSettings):
     database_url: str = ""
 
     groq_api_key: str = ""
-    groq_model: str = "llama-3.3-70b-versatile"
+    llm1_model: str = "llama-3.3-70b-versatile"
 
-    openrouter_api_key: str = ""
-    llm_model: str = "google/gemma-3-27b-it:free"
+    groq2_api_key: str = ""
+    llm2_model: str = "llama-3.3-70b-versatile"
 
     model_config = SettingsConfigDict(
         env_file=".env",

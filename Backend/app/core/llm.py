@@ -7,8 +7,8 @@ from openai import OpenAI
 
 def get_doctor_llm_client():
     return OpenAI(
-        api_key=settings.openrouter_api_key,
-        base_url="https://openrouter.ai/api/v1",
+        api_key=settings.groq2_api_key,
+        base_url="https://api.groq.com/openai/v1",
     )
 
 

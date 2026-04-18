@@ -55,7 +55,7 @@ class DeckDoctorAIService:
         user_prompt = user_template.format(structured_input=structured_input)
 
         response = client.chat.completions.create(
-            model=settings.llm_model,
+            model=settings.llm2_model,
             temperature=0.4,
             response_format={"type": "json_object"},
             messages=[

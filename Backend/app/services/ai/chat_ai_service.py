@@ -39,7 +39,7 @@ class ChatAIService:
         )
 
         response = client.chat.completions.create(
-            model=settings.groq_model,
+            model=settings.llm1_model,
             temperature=0.4,
             response_format={"type": "json_object"},
             messages=[
