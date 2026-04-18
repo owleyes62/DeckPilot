@@ -8,11 +8,9 @@ python-multipart==0.0.9
 # ========================
 # IA / LLM
 # ========================
-langchain==0.3.0
-langchain-openai==0.2.0
-langchain-community==0.3.0
 openai==1.51.0
 google-genai==1.30.0
+
 # ========================
 # Banco de dados
 # ========================
