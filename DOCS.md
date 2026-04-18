@@ -221,6 +221,32 @@ http://127.0.0.1:8000/docs
 
 ---
 
+## Importação de Cartas
+
+Antes de utilizar o sistema de geração de decks, é recomendado importar as cartas do arquivo JSON para o banco de dados. O projeto possui um endpoint específico para isso: POST /cards/import
+
+Esse endpoint lê o arquivo JSON local de cartas e insere no banco apenas as cartas que ainda não existem, evitando duplicações.
+
+### Como executar
+
+**Pela documentação interativa:**
+
+Acesse `http://127.0.0.1:8000/docs` e execute o endpoint `POST /cards/import` diretamente pela interface.
+
+**Via curl:**
+
+```bash
+curl -X POST "http://127.0.0.1:8000/cards/import"
+```
+
+**Via PowerShell:**
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/cards/import"
+```
+
+> **Importante:** Este passo melhora a validação das listas geradas pela IA e aumenta a quantidade de cartas reconhecidas pelo sistema.
+
 ## 9. Instruções de instalação e execução do front-end
 
 ### Pré-requisitos
